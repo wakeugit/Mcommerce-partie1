@@ -1,0 +1,53 @@
+{
+	"variables": [],
+	"info": {
+		"name": "microservice_tests",
+		"_postman_id": "2da7ae48-4343-c355-72b6-8ad38071b7d8",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:9090/Produits/",
+			"request": {
+				"url": "localhost:9090/Produits/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n        \"id\": 2,\n        \"nom\": \"New Product\",\n        \"prix\": 0,\n        \"prixAchat\": 400\n    }"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:9090/AdminProduits",
+			"request": {
+				"url": "localhost:9090/AdminProduits",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:9090/Produits/sortedByName",
+			"request": {
+				"url": "localhost:9090/Produits/sortedByName",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

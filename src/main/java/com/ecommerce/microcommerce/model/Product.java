@@ -1,7 +1,9 @@
 package com.ecommerce.microcommerce.model;
 
+import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

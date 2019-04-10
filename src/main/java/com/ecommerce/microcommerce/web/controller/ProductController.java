@@ -2,6 +2,7 @@ package com.ecommerce.microcommerce.web.controller;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
+import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -9,14 +10,18 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Api( description="API pour es opérations CRUD sur les produits.")
@@ -26,7 +31,21 @@ public class ProductController {
 
     @Autowired
     private ProductDao productDao;
+    //différence entre prix d‘achat et prix de vente
+    @RequestMapping(value = "/AdminProduits", method = RequestMethod.GET)
+    public Map<Product, Integer> calculerMargeProduit(){
+        List<Product> products = productDao.findAll();
+        Map<Product, Integer> produitsAvecMarge = new HashMap<Product, Integer>();
+        for (Product product : products) {
+            produitsAvecMarge.put(product, product.getPrix()-product.getPrixAchat());
+        }
+        return produitsAvecMarge;
+    }
 
+    @GetMapping(value = "Produits/sortedByName")
+    public List<Product> trierProduitsParOrdreAlphabetique(){
+        return productDao.findAllByOrderByNomAsc();
+    }
 
     //Récupérer la liste des produits
 
@@ -66,8 +85,13 @@ public class ProductController {
 
     //ajouter un produit
     @PostMapping(value = "/Produits")
+    public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product, Errors errors) {
+        if(product.getPrix() == 0) throw new ProduitGratuitException();
+        if (errors.hasErrors()) {
+            System.out.println("Errors: "+errors.toString());
+            return new ResponseEntity(errors.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
 
-    public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
 
         Product productAdded =  productDao.save(product);
 
